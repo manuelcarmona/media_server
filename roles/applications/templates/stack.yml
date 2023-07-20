@@ -1,0 +1,133 @@
+version: "2.1"
+services:
+{% if "nginx" in services %}
+  nginx:
+      container_name: nginx
+      image: 'jc21/nginx-proxy-manager:latest'
+      restart: unless-stopped
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ={{ timezone }}
+      ports:
+        - 80:80
+        - 443:443
+        - 81:81
+      volumes:
+        - {{ docker_dir }}/nginx-proxy-manager/data:/data
+        - {{ docker_dir }}/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+  {% endif %}
+  {% if "plex" in services %}
+  plex:
+    container_name: plex
+    image: lscr.io/linuxserver/plex:latest
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ={{ timezone }}
+      - VERSION=docker
+    volumes:
+      - {{ docker_dir }}/plex/library:/config
+      - {{ docker_dir }}/sonarr/data/tvseries:/tv
+      - {{ docker_dir }}/radarr/data/movies:/movies
+    ports:
+      - 32400:32400
+    devices:
+      - /dev/dri:dev/dri
+  {% endif %}
+  {% if "radarr" in services %}
+  radarr:
+      container_name: radarr
+      image: lscr.io/linuxserver/radarr:latest
+      restart: unless-stopped
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ={{ timezone }}
+      volumes:
+        - {{ docker_dir }}/radarr/data:/config
+        - {{ docker_dir }}/radarr/data/movies:/movies 
+        - {{ docker_dir }}/radarr/data/downloads/torrents:/downloads
+      ports:
+        - 7878:7878
+  {% endif %}
+  {% if "sonarr" in services %}
+  sonarr:
+      container_name: sonarr
+      image: lscr.io/linuxserver/sonarr:latest
+      restart: unless-stopped
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ={{ timezone }}
+      volumes:
+        - {{ docker_dir }}/sonarr/data:/config
+        - {{ docker_dir }}/sonarr/data/tvseries:/tv
+        - {{ docker_dir }}/sonarr/data/downloads/torrents:/downloads
+      ports:
+        - 8989:8989
+    {% endif %}
+  {% if "prowlarr" in services %}
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ={{ timezone }}
+    volumes:
+      - {{ docker_dir }}/prowlarr/data:/config
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+  {% endif %}
+  {% if "qbittorrent" in services %}
+  qbittorrent:
+    container_name: qbittorrent
+    image: lscr.io/linuxserver/qbittorrent:latest
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ={{ timezone }}
+      - WEBUI_PORT=8080
+    volumes:
+      - {{ docker_dir }}/qbittorrent/config:/config
+      - {{ docker_dir }}/qbittorrent/data/downloads:/downloads
+      - {{ docker_dir }}/sonarr/data/tvseries:/tv
+      - {{ docker_dir }}/radarr/data/movies:/movies
+    ports:
+      - 8080:8080
+      - 6881:6881
+      - 6881:6881/udp
+  {% endif %}
+  {% if "heimdall" in services %}
+  heimdall:
+    container_name: heimdall
+    image: lscr.io/linuxserver/heimdall:latest
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ={{ timezone }}
+    volumes:
+      - {{ docker_dir }}/heimdall/config:/config
+    ports:
+      - 10080:80
+      - 10443:443
+  {% endif %}
+  {% if "homeassistant" in services %}
+  homeassistant:
+    container_name: homeassistant
+    image: homeassistant/home-assistant:stable
+    restart: always
+    environment:
+      - TZ={{ timezone }}
+    restart: always
+    volumes:
+      - "{{ docker_dir }}/homeassistant:/config"
+    ports:
+      - 8123:8123
+  {% endif %}

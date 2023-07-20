@@ -1,0 +1,37 @@
+---
+- name: Ensure all necessary groups are created
+  ansible.builtin.group:
+    name: "{{ item }}"
+  loop:
+    - docker
+    - samba
+    - media
+    - "{{ username }}"
+
+- name: Ensure the non-root user is created
+  ansible.builtin.user:
+    name: "{{ username }}"
+    groups:
+      - sudo
+      - docker
+      - media
+      - users
+    append: true
+    shell: "{{ shell }}"
+
+- name: Suppress login message (hushlogin)
+  ansible.builtin.file:
+    path: "/home/{{ username }}/.hushlogin"
+    mode: "0644"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    modification_time: preserve
+    access_time: preserve
+    state: touch
+
+- name: Enable passwordless sudo for "{{ username }}"
+  ansible.builtin.lineinfile:
+    dest: /etc/sudoers
+    regexp: "^%wheel"
+    line: "{{ username }} ALL=(ALL) NOPASSWD: ALL"
+    validate: "/usr/sbin/visudo -cf %s"

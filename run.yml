@@ -1,0 +1,7 @@
+---
+- name: Playbook de instalación del Media Manager
+  hosts: all
+  become: true
+
+  roles:
+    - role: system

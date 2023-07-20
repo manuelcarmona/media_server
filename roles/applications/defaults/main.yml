@@ -1,0 +1,35 @@
+---
+application_dirs:
+    - /opt/plex/library
+    - /opt/radarr/data
+    - /opt/radarr/data/movies
+    - /opt/radarr/data/downloads/torrents
+    - /opt/sonarr/data
+    - /opt/sonarr/data/tvseries
+    - /opt/sonarr/data/downloads/torrents
+    - /opt/prowlarr/data
+    - /opt/qbittorrent/config
+    - /opt/qbittorrent/data/downloads
+    - /opt/nginx-proxy-manager/data
+    - /opt/nginx-proxy-manager/letsencrypt
+    - /opt/heimdall/config
+    - /opt/homeassistant
+ufw_ports:
+    - "7878"
+    - "8989"
+    - "9696"
+    - "32400"
+    - "8080"
+    - "6881"
+ufw_ports_udp:
+    - "6881"
+services:
+  - homeassistant
+  - nginx
+  - plex
+  - radarr
+  - sonarr
+  - prowlawr
+  - qbittorrent
+  - heimdall
+docker_dir: "/opt"
