@@ -24,12 +24,12 @@ ufw_ports:
 ufw_ports_udp:
     - "6881"
 services:
-  - homeassistant
-  - nginx
-  - plex
-  - radarr
-  - sonarr
-  - prowlawr
-  - qbittorrent
-  - heimdall
+    - homeassistant
+    - nginx
+    - plex
+    - radarr
+    - sonarr
+    - prowlawr
+    - qbittorrent
+    - heimdall
 docker_dir: "/opt"

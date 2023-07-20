@@ -4,4 +4,3 @@ server_ip: "{{ lan_base }}.200"
 username: manu
 swarm_compose_temp_path: /tmp/docker
 timezone: "Europe/Madrid"
-
