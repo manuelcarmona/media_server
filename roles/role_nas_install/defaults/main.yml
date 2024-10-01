@@ -1,0 +1,4 @@
+role_nas_install_image_tag: latest
+role_nas_install_tz: Europe/Madrid
+role_nas_install_puid: 1000
+role_nas_install_pgid: 1000

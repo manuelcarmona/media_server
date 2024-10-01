@@ -1,0 +1,145 @@
+services:
+    # PIHOLE
+    pihole:
+        container_name: pihole
+        image: pihole/pihole:{{ role_nas_install_image_tag }}
+        ports:
+            - "53:53/tcp"
+            - "53:53/udp"
+            - "8082:80/tcp"
+        environment:
+            TZ: "{{ role_nas_install_tz }}"
+            WEBPASSWORD: "{{ pihole_password }}"
+        volumes:
+            - "{{ app_dir }}/etc-pihole:/etc/pihole"
+            - "{{ app_dir }}/etc-dnsmasq.d:/etc/dnsmasq.d"
+        restart: unless-stopped
+
+    # QBITTORRENT
+    qbittorrent:
+        image: lscr.io/linuxserver/qbittorrent:{{ role_nas_install_image_tag }}
+        container_name: qbittorrent
+        environment:
+            - PUID="{{ role_nas_install_puid }}"
+            - PGID="{{ role_nas_install_pgid }}"
+            - TZ="{{ role_nas_install_tz }}"
+            - WEBUI_PORT=8080
+            - TORRENTING_PORT=6881
+        volumes:
+            - "{{ app_dir }}/qbittorrent/appdata:/config"
+            - "{{ data_dir }}/torrents:/data/torrents"
+        ports:
+            - 8080:8080
+            - 6881:6881
+            - 6881:6881/udp
+        restart: unless-stopped
+
+    # RADARR
+    radarr:
+        image: lscr.io/linuxserver/radarr:{{ role_nas_install_image_tag }}
+        container_name: radarr
+        environment:
+            - PUID="{{ role_nas_install_puid }}"
+            - PGID="{{ role_nas_install_pgid }}"
+            - TZ="{{ role_nas_install_tz }}"
+        volumes:
+            - "{{ app_dir }}/radarr/data:/config"
+            - "{{ data_dir }}:/data"
+        ports:
+            - 7878:7878
+        restart: unless-stopped
+
+    # PLEX
+    plex:
+        image: lscr.io/linuxserver/plex:{{ role_nas_install_image_tag }}
+        container_name: plex
+        network_mode: host
+        environment:
+            - PUID="{{ role_nas_install_puid }}"
+            - PGID="{{ role_nas_install_pgid }}"
+            - TZ="{{ role_nas_install_tz }}"
+            - VERSION=docker
+        volumes:
+            - "{{ app_dir }}/plex/library:/config"
+            - "{{ data_dir }}/media:/data/media"
+        devices:
+            - /dev/dri:/dev/dri
+        restart: unless-stopped
+
+    # JACKETT
+    jackett:
+        image: lscr.io/linuxserver/jackett:{{ role_nas_install_image_tag }}
+        container_name: jackett
+        environment:
+            - PUID="{{ role_nas_install_puid }}"
+            - PGID="{{ role_nas_install_pgid }}"
+            - TZ="{{ role_nas_install_tz }}"
+            - AUTO_UPDATE=true
+        volumes:
+            - "{{ app_dir }}/jackett/data:/config"
+            - "{{ data_dir }}/torrents:/data/torrents"
+        ports:
+        - 9117:9117
+        restart: unless-stopped
+
+    # SONNAR
+    sonarr:
+        image: lscr.io/linuxserver/sonarr:{{ role_nas_install_image_tag }}
+        container_name: sonarr
+        environment:
+            - PUID="{{ role_nas_install_puid }}"
+            - PGID="{{ role_nas_install_pgid }}"
+            - TZ="{{ role_nas_install_tz }}"
+        volumes:
+            - "{{ app_dir }}/sonarr/data:/config"
+            - "{{ data_dir }}:/data"
+        ports:
+            - 8989:8989
+        restart: unless-stopped
+
+    # WATCHTOWER
+    watchtower:
+        image: containrrr/watchtower:{{ role_nas_install_image_tag }}
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        restart: unless-stopped
+
+    # REQUESTRR
+    requestrr:
+        image: thomst08/requestrr:{{ role_nas_install_image_tag }}
+        volumes:
+            - "{{ app_dir }}/requestrr/data:/root/config"
+        ports:
+        - 4545:4545
+        restart: unless-stopped
+
+    # TAUTULLI
+    tautulli:
+        image: lscr.io/linuxserver/tautulli:latest
+        container_name: tautulli
+        environment:
+            - PUID="{{ role_nas_install_puid }}"
+            - PGID="{{ role_nas_install_pgid }}"
+            - TZ="{{ role_nas_install_tz }}"
+        volumes:
+            - "{{ app_dir }}/tautulli/config:/config"
+        ports:
+        - 8181:8181
+        restart: unless-stopped
+
+    # UNMANIAC
+    unmanic:
+        container_name: unmanic
+        image: josh5/unmanic:{{ role_nas_install_image_tag }}
+        environment:
+            - PUID="{{ role_nas_install_puid }}"
+            - PGID="{{ role_nas_install_pgid }}"
+        volumes:
+        - "{{ app_dir }}/unmaniac/config:/config"
+        - "{{ data_dir }}/media:/library"
+        - "{{ app_dir }}/unmaniac/tmp:/tmp/unmanic"
+        ports:
+            - 8888:8888
+        devices:
+            - /dev/dri:/dev/dri
+        restart: unless-stopped

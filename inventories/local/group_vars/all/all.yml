@@ -1,0 +1,4 @@
+nas_user: foo
+pihole_password: bar
+data_dir: /data
+app_dir: /opt

@@ -1,6 +1,0 @@
-lan_subnet: 192.168.0.0/24
-lan_base: "{{ lan_subnet | regex_replace('0/\\d{2}', '') }}"
-server_ip: "{{ lan_base }}.200"
-username: manu
-swarm_compose_temp_path: /tmp/docker
-timezone: "Europe/Madrid"

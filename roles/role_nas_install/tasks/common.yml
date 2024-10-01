@@ -1,0 +1,23 @@
+- name: COMMON - Ensure apt is updated
+  ansible.builtin.apt:
+    update_cache: true
+    force_apt_get: true
+
+- name: COMMON - Install dependencies
+  ansible.builtin.apt:
+    name:
+      - vim
+    state: present
+
+- name: COMMON - Ensure DNSStubListener is set to 'no' in /etc/systemd/resolved.conf
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: '^#?DNSStubListener='
+    line: 'DNSStubListener=no'
+    state: present
+    backrefs: true
+
+- name: COMMON - Restart systemd-resolved to apply changes
+  ansible.builtin.systemd:
+    name: systemd-resolved
+    state: restarted

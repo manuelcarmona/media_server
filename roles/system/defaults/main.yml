@@ -1,9 +1,0 @@
----
-packages:
-    - htop
-    - speedtest-cli
-packages_docker:
-    - docker-ce
-    - docker-compose
-shell: /bin/bash
-ssh_port: 22

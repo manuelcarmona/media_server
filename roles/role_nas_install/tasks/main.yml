@@ -1,0 +1,9 @@
+---
+# - name: Include common tasks
+#   ansible.builtin.include_tasks: common.yml
+
+# - name: Include docker tasks
+#   ansible.builtin.include_tasks: docker.yml
+
+- name: Include services tasks
+  ansible.builtin.include_tasks: services.yml

@@ -1,0 +1,43 @@
+---
+- name: DOCKER - Install dependencies
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+    state: present
+
+- name: DOCKER - Add Docker’s official GPG key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: DOCKER - Add Docker APT repository
+  ansible.builtin.apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+    state: present
+
+- name: DOCKER - Install docker CE
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - docker-ce
+
+- name: DOCKER - Enable & start Docker service
+  ansible.builtin.systemd:
+    name: docker
+    enabled: true
+    state: started
+
+- name: DOCKER - Ensure group "docker" exists
+  ansible.builtin.group:
+    name: docker
+    state: present
+
+- name: DOCKER - Add user to group docker
+  ansible.builtin.user:
+    name: "{{ nas_user }}"
+    groups: docker
+    append: true

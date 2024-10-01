@@ -1,7 +1,0 @@
----
-- name: Include Essential tasks
-  ansible.builtin.include_tasks: essential.yml
-- name: Include SSH tasks
-  ansible.builtin.include_tasks: ssh.yml
-- name: Include User tasks
-  ansible.builtin.include_tasks: user.yml

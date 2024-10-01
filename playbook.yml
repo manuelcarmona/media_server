@@ -1,0 +1,5 @@
+- name: Playbook to install nas services
+  hosts: all
+  become: true
+  roles:
+    - role: role_nas_install

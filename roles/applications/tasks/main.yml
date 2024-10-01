@@ -1,5 +1,0 @@
----
-- name: Include Requirements tasks
-  ansible.builtin.include_tasks: requirements.yml
-- name: Include Deployment tasks
-  ansible.builtin.include_tasks: deployment.yml
